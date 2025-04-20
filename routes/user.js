@@ -1,3 +1,4 @@
+// importe el modelo de usuario
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
@@ -9,11 +10,13 @@ router.post('/register', async (req, res) => {
         return res.status(400).json({ message: 'Usuario y contraseña son requeridos' });
     }
 
+    // Verificar si el usuario ya existe
     const existingUser = await User.findOne({ username });
     if (existingUser) {
         return res.status(400).json({ message: 'El usuario ya existe' });
     }
 
+    // Crear un nuevo usuario
     const newUser = new User({ username, password });
     await newUser.save();
     res.json({ message: 'Usuario registrado exitosamente' });
@@ -26,6 +29,7 @@ router.post('/login', async (req, res) => {
         return res.status(400).json({ message: 'Usuario y contraseña son requeridos' });
     }
 
+    // Verificar si el usuario existe
     const user = await User.findOne({ username });
     if (user && user.password === password) {
         res.json({ message: 'Login exitoso' });
@@ -34,4 +38,5 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// Obtener todos los usuarios
 module.exports = router;
